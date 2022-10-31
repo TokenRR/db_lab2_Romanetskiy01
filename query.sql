@@ -2,7 +2,7 @@
 SELECT driver_name, age
 FROM drivers
 
--- Age of riders (Pie chart)
+-- locations of the last 10 races (Pie chart)
 SELECT location, COUNT(location)
 FROM races
 GROUP BY location
