@@ -1,13 +1,16 @@
--- Age of riders (Bar chart)
-SELECT driver_name, age
-FROM drivers
+-- Number of cars created by engineering teams (Bar chart)
+SELECT TRIM(brand) AS brand, count(*) AS quantity
+FROM car
+GROUP BY brand
 
--- locations of the last 10 races (Pie chart)
-SELECT location, COUNT(location)
-FROM races
-GROUP BY location
+-- The amount of earned points per team (Pie chart)
+SELECT TRIM(Team.Name) AS Team_Name, SUM(PointsScored) AS Points
+FROM car 
+JOIN RaceDriver ON car.CarID = RaceDriver.CarID
+JOIN Team ON car.TeamID = Team.TeamID
+GROUP by Team.Name
 
--- Riders over 25 years old (dependence graph)
-SELECT TRIM(driver_name) AS drivers, age
-FROM drivers
-WHERE age > 25
+-- The number of points depends on the finishing position (dependence graph)
+SELECT Position, PointsScored AS Points
+FROM RaceDriver
+ORDER BY POSITION DESC;

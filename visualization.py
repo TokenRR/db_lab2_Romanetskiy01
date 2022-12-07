@@ -1,6 +1,5 @@
 import psycopg2
 import matplotlib.pyplot as plt
-import seaborn as sns
 
 username = 'postgres'
 password = 'postgres'
@@ -9,77 +8,82 @@ host = 'localhost'
 port = '5432'
 
 q_1 = '''
-SELECT driver_name, age
-FROM drivers
+SELECT TRIM(brand) AS brand, count(*) AS quantity
+FROM car
+GROUP BY brand
 '''
 
 q_2 = '''
-SELECT location, COUNT(location)
-FROM races
-GROUP BY location
+SELECT TRIM(Team.Name) AS Team_Name, SUM(PointsScored) AS Points
+FROM car 
+JOIN RaceDriver ON car.CarID = RaceDriver.CarID
+JOIN Team ON car.TeamID = Team.TeamID
+GROUP by Team.Name
 '''
 
 q_3 = '''
-SELECT TRIM(driver_name) AS drivers, age
-FROM drivers
-WHERE age > 25
+SELECT Position, PointsScored AS Points
+FROM RaceDriver
+ORDER BY POSITION DESC;
 '''
 
-try:
-    conn=psycopg2.connect(user=username, 
-                            password=password,
-                            dbname=database, 
-                            host=host,
-                            port = port)
-                            
-    try:
-        with conn:
-            print(f'\nThe Database - {database} is connected and ready to go')
-            cur = conn.cursor()
+conn = psycopg2.connect(user=username, password=password, dbname=database, host=host, port=port)
 
-            print('\n\n1th query - Age of riders')
-            cur.execute(q_1)
-            periods = []
-            p_count = []
-            plt.xticks(rotation=10)
-            for row in cur:
-                periods.append(row[0])
-                p_count.append(row[1])
-            sns.barplot(x = periods , y = p_count)
-            plt.show()
+with conn:
 
-            print('\n\n2th query - Age of riders(sorted)')
-            cur.execute(q_2)
-            periods = []
-            p_count = []
-            for row in cur:
-                periods.append(row[0])
-                p_count.append(row[1])
-            fig1, ax1 = plt.subplots()
-            ax1.pie(p_count,
-                    labels=periods,
-                    autopct='%1.1f%%',
-                    shadow=True,
-                    startangle=90)
-            ax1.axis('equal')
-            plt.show()
+    cur = conn.cursor()
+
+    cur.execute(q_1)
+    teams = []
+    quantity = []
+
+    for row in cur:
+        teams.append(row[0])
+        quantity.append(row[1])
+
+    x_range = range(len(teams))
+ 
+    figure, (bar_ax, pie_ax, graph_ax) = plt.subplots(1, 3)
+    
+    bar_ax.bar(x_range, quantity, label='Кількість')
+    bar_ax.set_title('Кількість болідів створена інженерними командами')
+    bar_ax.set_xlabel('Команди')
+    bar_ax.set_ylabel('Кількість, шт')
+    bar_ax.set_xticks(x_range)
+    bar_ax.set_xticklabels(teams)
 
 
-            print('\n\n3th query - Riders over 25 years old')
-            cur.execute(q_3)
-            periods = []
-            p_count = []
-            plt.xticks(rotation=10)
-            for row in cur:
-                periods.append(row[0])
-                p_count.append(row[1])
-            sns.lineplot(x = periods, y = p_count)
-            plt.show()
-    except:
-            print('Something wrong with your query / database / tables')
-        
-except:
-    print('\
-You made a mistake somewhere among these parameters: \n\
-username, password, database, host, port.\n\
-Please, change it')
+    cur.execute(q_2)
+
+    teams = []
+    points = []
+
+    for row in cur:
+        teams.append(row[0])
+        points.append(row[1])
+
+    pie_ax.pie(points, labels=teams, autopct='%1.1f%%')
+    pie_ax.set_title('Кількість зароблених балів командою')
+
+  
+    cur.execute(q_3)
+    positions = []
+    points = []
+  
+    for row in cur:
+        positions.append(row[0])
+        points.append(row[1])
+
+    graph_ax.plot(positions, points, marker='o')
+    graph_ax.set_xlabel('Зайняте місце')
+    # graph_ax.set_ylabel('Кількість балів')
+    graph_ax.set_title('Графік кількості балів у залежності від фінішної позиції')
+
+    for qnt, price in zip(positions, points):
+        graph_ax.annotate(price, xy=(qnt, price), xytext=(7, 2), textcoords='offset points')    
+
+
+mng = plt.get_current_fig_manager()
+mng.resize(1400, 600)
+
+plt.show()

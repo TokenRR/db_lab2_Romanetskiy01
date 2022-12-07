@@ -1,52 +1,63 @@
-INSERT INTO drivers(driver_id, driver_name, age, number)
+INSERT INTO Location(LocationID, LocationName)
 VALUES
-('1', 'Lewis Hamilton', 37, 44),
-('2', 'Charles Leclerc', 25, 16),
-('3', 'Lando Norris', 22, 4),
-('4', 'Daniel Ricciardo', 33, 3),
-('5', 'Max Verstappen', 25, 33),
-('6', 'Valtteri Bottas', 33, 77),
-('7', 'Carlos Sainz', 28, 55),
-('8', 'Sergio Perez', 32, 11),
-('9', 'George Russell', 24, 63),
-('10', 'Esteban Ocon', 26, 31);
+('1', 'USA'),
+('2', 'France'),
+('3', 'Ukraine'),
+('4', 'Canada'),
+('5', 'Japan');
 
-
-INSERT INTO races(race_id, date, location) 
+INSERT INTO Team(TeamID, Name) 
 VALUES
-('1', '2022-11-20', 'Abu Dhabi Grand Prix'),
-('2', '2022-11-13', 'Rio de Janeiro'),
-('3', '2022-10-30', 'Mexico City'),
-('4', '2022-10-23', 'California'),
-('5', '2022-10-09', 'Suzuka'),
-('6', '2022-10-02', 'Marina Bay'),
-('7', '2022-09-11', 'Monza'),
-('8', '2022-09-04', 'Zandvoort'),
-('9', '2022-08-28', 'Spa'),
-('10', '2022-07-31', 'Budapest');
+('1', 'McLaren'),
+('2', 'Mercedes AMG'),
+('3', 'Ferrari'),
+('4', 'Haas'),
+('5', 'Aston Martin');
 
-INSERT INTO countries(country_id, country_name) 
+INSERT INTO PointsSystem(PointsSystemID, Name) 
 VALUES
-('1', 'UAE'),
-('2', 'Brazil'),
-('3', 'Mexico'),
-('4', 'USA'),
-('5', 'Japan'),
-('6', 'Singapore'),
-('7', 'Italy'),
-('8', 'Netherlands'),
-('9', 'Belgium'),
-('10', 'Hungary');
+('1', '1980'),
+('2', '1981-1990'),
+('3', '1991-2002'),
+('4', '2003-2009'),
+('5', '2010-2018');
 
-INSERT INTO race_contest(race_contest_id, driver_id, race_id, country_id) 
+INSERT INTO Season(SeasonID, PointsSystemID, Name, StartDate, EndDate) 
 VALUES
-('1', '1', '1', '1'),
-('2', '2', '1', '1'),
-('3', '3', '1', '1'),
-('4', '4', '1', '1'),
-('5', '5', '1', '1'),
-('6', '6', '1', '1'),
-('7', '7', '1', '1'),
-('8', '8', '1', '1'),
-('9', '9', '1', '1'),
-('10', '10', '1', '1');
+('1', '3', '2014 Formula One World Championship', '2014-03-28', '2014-11-25'),
+('2', '3', '2015 Formula One World Championship', '2015-03-19', '2015-11-24'),
+('3', '3', '2016 Formula One World Championship', '2016-03-20', '2016-11-27'),
+('4', '3', '2017 Formula One World Championship', '2017-03-26', '2017-11-26'),
+('5', '3', '2018 Formula One World Championship', '2018-03-25', '2018-11-25');
+
+INSERT INTO TeamMember(TeamMemberID, TeamID, Name, JobFunction, StartDate, EndDate) 
+VALUES
+('1', '1', 'Lando Norris',     'Driver',  '2015-05-20', '2020-10-27'),
+('2', '1', 'Daniel Ricciardo', 'Driver',  '2015-07-28', '2020-03-10'),
+('3', '2', 'Lewis Hamilton',   'Driver',  '2015-05-16', '2020-10-01'),
+('4', '2', 'Valtteri Bottas',  'Driver',  '2015-07-06', '2020-07-10'),
+('5', '3', 'Sebastian Vettel', 'Driver',  '2015-12-15', '2020-03-08');
+
+INSERT INTO Race(RaceID, LocationID, SeasonID, Name, Date) 
+VALUES
+('1', '1', '5', 'The Circuit of the Americas',  '2018-06-15'),
+('2', '2', '5', 'Le Castellet',                 '2018-07-10'),
+('3', '3', '5', 'Chaika Motorsports Complex',   '2018-08-20'),
+('4', '4', '5', 'Circuit de Gilles-Villeneuve', '2018-09-12'),
+('5', '5', '5', 'Suzuka',                       '2018-10-01');
+
+INSERT INTO Car(CarID, TeamID, Name, Brand, Number) 
+VALUES
+('1', '1', 'MCL34',                         'McLaren',      '34'),
+('2', '1', 'MCL35',                         'McLaren',      '35'),
+('3', '2', 'Mercedes AMG F1 W09 EQ Power+', 'Mercedes-AMG', '09'),
+('4', '2', 'Mercedes AMG F1 W10 EQ Power+', 'Mercedes-AMG', '10'),
+('5', '3', 'Ferrari SF71H',                 'McLaren',      '71');
+
+INSERT INTO RaceDriver(RaceID, TeamMemberID, CarID, Position, PointsScored) 
+VALUES
+('5', '1', '1', '1', '25'),
+('5', '2', '1', '7', '6'),
+('5', '3', '3', '2', '18'),
+('5', '4', '3', '4', '12'),
+('5', '5', '5', '9', '2');

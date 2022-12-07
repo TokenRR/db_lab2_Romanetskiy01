@@ -7,20 +7,23 @@ host = 'localhost'
 port = '5432'
 
 q_1 = '''
-SELECT driver_name, age
-FROM drivers
+SELECT TRIM(brand) AS brand, count(*) AS quantity
+FROM car
+GROUP BY brand
 '''
 
 q_2 = '''
-SELECT location, COUNT(location)
-FROM races
-GROUP BY location
+SELECT TRIM(Team.Name) AS Team_Name, SUM(PointsScored) AS Points
+FROM car 
+JOIN RaceDriver ON car.CarID = RaceDriver.CarID
+JOIN Team ON car.TeamID = Team.TeamID
+GROUP by Team.Name
 '''
 
 q_3 = '''
-SELECT TRIM(driver_name) AS drivers, age
-FROM drivers
-WHERE age > 25
+SELECT Position, PointsScored AS Points
+FROM RaceDriver
+ORDER BY POSITION DESC;
 '''
 try:
     conn=psycopg2.connect(user=username, 
@@ -34,17 +37,17 @@ try:
             print(f'\nThe Database - {database} is connected and ready to go')
             cur = conn.cursor()
 
-            print('\n\n1th query - Age of riders')
+            print('\n\n1th query - Number of cars created by engineering teams')
             cur.execute(q_1)
             for row in cur:
                 print(row)
 
-            print('\n\n2th query - Age of riders(sorted)')
+            print('\n\n2th query - The amount of earned points per team')
             cur.execute(q_2)
             for row in cur:
                 print(row)
 
-            print('\n\n3th query - Riders over 25 years old')
+            print('\n\n3th query - The number of points depends on the finishing position')
             cur.execute(q_3)
             for row in cur:
                 print(row)
